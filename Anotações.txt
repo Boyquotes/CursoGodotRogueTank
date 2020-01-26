@@ -1,0 +1,35 @@
+Aula 16 - Colocando animação de fogo ao atirar com o tanque.
+
+1 - Adicione o sprite de fogo ao barrel.
+
+2 - Adicionando node AnimationPlayer ao node barrel.
+
+3 - Criar uma nova animação no painel de animação, clicando em animation e em New, dê um nome para animação.
+
+4 - Selecione o sprite fire e mude a textura no barra Inspector clicando na chave
+
+5 - Selecione o próximo quadro e coloque o próximo sprite
+ do fogo, arraste ele para cima da textura inicial na aba Inspector na propriedade textura.
+
+6 - Grave o novo sprite no novo quadro clicando na chave, coloque a posição da imagem um pouco pra frente, e grave a posição em location, faça o mesmo para o último sprite da animação
+
+7 - Deixe a animação visível só até o 3 quadro, clique no sprite fire da cena tanque e em Inspector procure por visibility clique na chave para habilitar a visibilidade no primeiro quadro e depois selecione o 3 quadro e desabilite a visibilidade.
+
+8 -  Programar no script do tanque o tiro, coloque a seguinte linha na função da ação do tiro.
+
+    $barrel/animation.play("fire")
+
+
+Aula 17 - Alterando skin do tanque usando lista.
+
+ 1 - Criando sistema de troca de skins.
+
+    a - var bodies = []
+    b - preencha a lista com o caminho dos sprite que vão compor a lista.
+    exemplo: "res://sprites/tankBody_bigRed.png",
+
+Aula 18. - Alterando a skin usando o painel de inspector
+
+ 1 - Criar duas variáveis que irão receber um inteiro e irão ser passadas como parâmetros no método load para alterar a skin do tanque.
+
+ 2 - Usando exportação de variáveis e renomeando as skin para serem usadas no editor de variáveis do script.

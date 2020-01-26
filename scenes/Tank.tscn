@@ -54,7 +54,9 @@ script = ExtResource( 1 )
 polygon = PoolVector2Array( -14.718, -27.3944, -17.14, -28.098, -25.0071, -21.8043, -25.0071, 21.0277, -16.7514, 28.4117, 16.687, 27.7338, 25.1676, 21.9019, 24.9928, -21.6295, 15.1055, -28.0722 )
 
 [node name="Sprite" type="Sprite" parent="."]
+position = Vector2( -0.138785, 0.373315 )
 rotation = 1.5708
+scale = Vector2( 1.34913, 1.30595 )
 texture = ExtResource( 2 )
 
 [node name="barrel" type="Node2D" parent="."]
