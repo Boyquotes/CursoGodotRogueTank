@@ -1,9 +1,9 @@
 extends Area2D
 
-#variável para controle de velocidade.
+# variável para controle de velocidade.
 var vel = 250 
-#variável de direção.
-var dir = Vector2(0,-1) 
+# variável do angulo em 90 graus. Usando seget para chamar a função setar direção. 
+var dir = Vector2(0,-1) setget setar_direcao
 
 func _ready():
 	pass 
@@ -12,8 +12,13 @@ func _ready():
 func _process(delta):
 	translate(dir * vel * delta)
 	
-#função criada pra saber quando qual quer instância do objeto bullet saiu da tela
+# função criada pra saber quando qual quer instância do objeto bullet saiu da tela
 func _on_notifier_screen_exited():
 	#pagar objeto (liberando espaço na memória). 
 	queue_free()
-	pass # Replace with function body.
+	
+# função para setar o angulo atual do mouse na bala.
+func setar_direcao(val):
+	dir = val
+	#a rotação é o angulo da direção
+	rotation = dir.angle()

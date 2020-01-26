@@ -13,12 +13,14 @@ height = 6.25894
 script = ExtResource( 1 )
 
 [node name="sprite" type="Sprite" parent="."]
+rotation = 1.5708
 texture = ExtResource( 2 )
 
 [node name="shape" type="CollisionShape2D" parent="."]
+rotation = 1.5708
 shape = SubResource( 1 )
 
 [node name="notifier" type="VisibilityNotifier2D" parent="."]
-position = Vector2( 2.38419e-007, -0.386494 )
-scale = Vector2( 0.394493, 0.703688 )
+position = Vector2( -0.146196, -0.276848 )
+scale = Vector2( 0.49683, 0.319925 )
 [connection signal="screen_exited" from="notifier" to="." method="_on_notifier_screen_exited"]
