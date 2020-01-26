@@ -1,8 +1,51 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scripts/Tank.gd" type="Script" id=1]
 [ext_resource path="res://sprites/tankBody_huge.png" type="Texture" id=2]
 [ext_resource path="res://sprites/tankDark_barrel1_outline.png" type="Texture" id=3]
+[ext_resource path="res://sprites/shotRed.png" type="Texture" id=4]
+[ext_resource path="res://sprites/shotLarge.png" type="Texture" id=5]
+[ext_resource path="res://sprites/shotOrange.png" type="Texture" id=6]
+
+[sub_resource type="Animation" id=1]
+resource_name = "fire"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("fire:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 4 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("fire:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ Vector2( 56.598, 0 ), Vector2( 60.598, 0 ), Vector2( 67.598, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("fire:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
 
 [node name="Tank" type="KinematicBody2D"]
 script = ExtResource( 1 )
@@ -24,3 +67,14 @@ offset = Vector2( 0.0791969, -8.4941 )
 
 [node name="muzzle" type="Position2D" parent="barrel"]
 position = Vector2( 40.1619, 0.0315399 )
+
+[node name="fire" type="Sprite" parent="barrel"]
+visible = false
+position = Vector2( 67.598, 0 )
+rotation = -1.5708
+scale = Vector2( 1.25983, 1.37053 )
+texture = ExtResource( 4 )
+
+[node name="animation" type="AnimationPlayer" parent="barrel"]
+playback_speed = 2.0
+anims/fire = SubResource( 1 )

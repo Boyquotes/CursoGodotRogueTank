@@ -42,6 +42,9 @@ func _process(delta):
 			#mouse. Usando o normalized para não calcular a velocidade. 
 			bullet.dir = Vector2( cos(rotation), sin(rotation) ).normalized()
 			
+			#Chamando a animação fire do disparo
+			$barrel/animation.play("fire")
+			
 			#Colocando o objeto bullet na cena principail.
 			get_parent().add_child(bullet)
 	
