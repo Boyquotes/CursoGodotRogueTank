@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scripts/Tank.gd" type="Script" id=1]
-[ext_resource path="res://sprites/tankBody_huge.png" type="Texture" id=2]
+[ext_resource path="res://sprites/tankBody_green.png" type="Texture" id=2]
 [ext_resource path="res://sprites/tankDark_barrel1_outline.png" type="Texture" id=3]
 [ext_resource path="res://sprites/shotRed.png" type="Texture" id=4]
 [ext_resource path="res://sprites/shotLarge.png" type="Texture" id=5]
@@ -10,6 +10,7 @@
 [sub_resource type="Animation" id=1]
 resource_name = "fire"
 length = 0.4
+step = 0.0
 tracks/0/type = "value"
 tracks/0/path = NodePath("fire:texture")
 tracks/0/interp = 1
@@ -17,7 +18,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
+"times": PoolRealArray( 0.00495, 0.101955, 0.201423 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
 "values": [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 4 ) ]
@@ -29,10 +30,10 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
+"times": PoolRealArray( 0.00495, 0.111955, 0.211423 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
-"values": [ Vector2( 56.598, 0 ), Vector2( 60.598, 0 ), Vector2( 67.598, 0 ) ]
+"values": [ Vector2( 45, 45 ), Vector2( 47, 45 ), Vector2( 49, 45 ) ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("fire:visible")
@@ -41,20 +42,25 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.3 ),
+"times": PoolRealArray( 0.01, 0.3 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
 }
 
 [node name="Tank" type="KinematicBody2D"]
+collision_mask = 6
 script = ExtResource( 1 )
+bodie = 4
+barrel = 2
 
 [node name="Poly" type="CollisionPolygon2D" parent="."]
-polygon = PoolVector2Array( -14.718, -27.3944, -17.14, -28.098, -25.0071, -21.8043, -25.0071, 21.0277, -16.7514, 28.4117, 16.687, 27.7338, 25.1676, 21.9019, 24.9928, -21.6295, 15.1055, -28.0722 )
+position = Vector2( 0.949965, 0 )
+scale = Vector2( 0.525806, 1.01863 )
+polygon = PoolVector2Array( -43.7523, -13.6092, -43.4642, 14.5651, -25.0256, 22.5915, 26.5452, 22.5915, 42.1092, 9.32334, 42.6976, -3.94478, 26.2239, -21.9632, -24.6679, -22.2908 )
 
 [node name="Sprite" type="Sprite" parent="."]
-position = Vector2( -0.138785, 0.373315 )
+position = Vector2( 0.264862, 0 )
 rotation = 1.5708
 scale = Vector2( 1.34913, 1.30595 )
 texture = ExtResource( 2 )
@@ -63,20 +69,21 @@ texture = ExtResource( 2 )
 
 [node name="sprite" type="Sprite" parent="barrel"]
 rotation = 1.5708
-scale = Vector2( 1.42363, 1.69287 )
+scale = Vector2( 1.32431, 1.4082 )
 texture = ExtResource( 3 )
 offset = Vector2( 0.0791969, -8.4941 )
 
 [node name="muzzle" type="Position2D" parent="barrel"]
-position = Vector2( 40.1619, 0.0315399 )
+position = Vector2( 35, 0 )
 
 [node name="fire" type="Sprite" parent="barrel"]
 visible = false
-position = Vector2( 67.598, 0 )
+position = Vector2( 45, 45 )
 rotation = -1.5708
-scale = Vector2( 1.25983, 1.37053 )
-texture = ExtResource( 4 )
+z_index = 10
+texture = ExtResource( 5 )
+offset = Vector2( 45, 0 )
 
-[node name="animation" type="AnimationPlayer" parent="barrel"]
+[node name="anim" type="AnimationPlayer" parent="barrel"]
 playback_speed = 2.0
 anims/fire = SubResource( 1 )
