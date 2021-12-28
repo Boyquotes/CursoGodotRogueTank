@@ -16,8 +16,10 @@ const ROT_VEL = PI / 2
 # variável para o controle de velocidade.
 const MAX_SPEED = 100
 
-# pré carregamento do objeto bullet.
+# pré carregamento de objetos
 var pre_bullet = preload("res://scenes/bullet.tscn")
+var pre_track = preload("res://scenes/track.tscn")
+var travel = 0
 
 # Variável para celeração
 var aceleracao = 0
@@ -68,40 +70,28 @@ func _physics_process(delta):
 	if (Engine.editor_hint):
 		return
 	
-#	var dir_x = 0 
-#	var dir_y = 0 
-#
-#	#Entradas dos comandos.
-#	if (Input.is_action_pressed("ui_right")):
-#		dir_x += 1
-#
-#	if (Input.is_action_pressed("ui_left")):
-#		dir_x -= 1
-#
-#	if (Input.is_action_pressed("ui_up")):
-#		dir_y -= 1
-#
-#	if (Input.is_action_pressed("ui_down")):
-#		dir_y += 1
-#
-	# Input do botões do tiro
+	# Variável para mudar a velocidade.
+	var vel_control = 1
+	
+	# se a quantidade de oleo no grupo for maior que 0 set .3 pra velocidade do tank.
+	if get_tree().get_nodes_in_group(str(self) + "-oil").size() > 0:
+		vel_control = .3
+
 	if (Input.is_action_just_pressed("ui_shoot")):
 
-		# Limitando quantidade de tiros. 
-		# Se a quantidade de nós do grupo cannon_bullets for menor que 6 atire.		
+		# Limitando quantidade de tiros. 	
 		if (get_tree().get_nodes_in_group(bullet_tank_group).size() < 6):
 
 			# Crirando uma instância(cópia) do objeto bullet.
 			var bullet = pre_bullet.instance()
-
-			# Pegando a posição global do objeto "muzzel" e atribuiando na posição global 
-			# da variável bullet. 
+				
+			# Pegando a posição global do objeto "muzzel" e atribuiando na posição global da variável bullet. 
 			bullet.global_position = $barrel/muzzle.global_position
 
-			# Atribuindo o valor do seno e coseno na variável direção ou seja o x e o y do 
-			# mouse. Usando o normalized para não calcular a velocidade. 
+			# Atribuindo o valor do seno e coseno na variável direção ou seja o x e o y do mouse. 
+			# Usando o normalized para não calcular a velocidade. 
 			bullet.dir = Vector2( cos($barrel.global_rotation), sin($barrel.global_rotation) ).normalized()
-
+			
 			# Adicionando um grupo em tempo de execução para limitar a quantidade de tiros de cada tank. 
 			bullet.add_to_group(bullet_tank_group)
 
@@ -121,32 +111,63 @@ func _physics_process(delta):
 	var rotacao = 0 
 	var direcao = 0 
 	
-	# Controle da rotação
+	# Controle da rotação.
 	if (Input.is_action_pressed("ui_right")):
 		rotacao += 1
 	if (Input.is_action_pressed("ui_left")):
 		rotacao -= 1
+		
+	# Controle da rotação horizontal da esquerda.
+	if rotacao == 0:
+		rotacao = Input.get_joy_axis(0, JOY_AXIS_0)
+	
 	# Controle da direção
 	if (Input.is_action_pressed("ui_up")):
 		direcao += 1
 	if (Input.is_action_pressed("ui_down")):
 		direcao -= 1
+		
+	# Controle da direção vertical da esquerda.
+	if rotacao == 0:
+		rotacao = -Input.get_joy_axis(0, JOY_AXIS_1)
+		
 	# Rotacionando o tank
 	rotate(ROT_VEL * rotacao * delta) 
 	
 	# Se diração for diferente de 0
 	#if (direcao != 0):
-		# Metódo lerp interpola(interompe) linearmente entre dois valores por um valor como normalizador.
-		# Vai de 0 a 100 com uma variação(peso) de 1 decimo.
+	# Metódo lerp interpola(interompe) linearmente entre dois valores por um valor como normalizador.
+	# Vai de 0 a 100 com uma variação(peso) de 1 decimo.
 	aceleracao = lerp(aceleracao , MAX_SPEED * direcao , .03)
 	#else:
 		#aceleracao = lerp(aceleracao, 0, .05)
 	
-	print(aceleracao)
+	# print(aceleracao)
 	
-	# Chamando o método move_and_slide para movimentar o objeto apartir do ponto original 
-	#  e colidir com paredes, movimentando para direção x ou y a cada pixel.
-	move_and_slide(Vector2( cos(rotation), sin(rotation) ) * aceleracao)
+	# Chamando o método move_and_slide para movimentar o objeto apartir do ponto original. 
+	# e colidir com paredes, movimentando para direção x ou y a cada pixel.
+	# criando variável move para receber o ponto original do objeto e saber o quando o tanque andou.
+	var move = move_and_slide(Vector2( cos(rotation), sin(rotation) ) * aceleracao * vel_control)
+	
+	# Vendo o tamanho da variável move e adicionado o valor a variável travel multiplicado por Delta que multiplica por puxel.
+	travel += move.length() * delta
+	
+	if travel > $Sprite.texture.get_size().y: # Se o valor de travel for maior que altura do sprite em pixel. 
+		travel = 0   # zero o valor de travel.
+		var track = pre_track.instance() # instanciando uma nova instância do track para o tanque.
+		# setando a direção do agulo do tanque na trilha para que ela seja criada na mesma posição do tanque 5 pixel pra trás. 
+		track.global_position = global_position - Vector2( cos(rotation), sin(rotation) ).normalized() * 5
+		track.rotation = rotation # setando a rotação atual do tanque na trilha.
+		track.z_index = z_index - 1 # tirando um do z_index do tranque e adicionado o valor ao z_index da track garantindo que seja desenhado sempre abaixo do tanque.
+		$"../".add_child(track) # adicionando o track no parente tanque.
+	
+	# Pegando o angulo do analogo horizontal da direita
+	var e_hor_axis = Input.get_joy_axis(0, JOY_AXIS_2)
+	print(e_hor_axis)
+	
+	# Pegando o angulo do analogo vertical da direita
+	#var d_vert_axis = Input.get_joy_axis(0, JOY_AXIS_3)
+	
 	
 	# Apontando o barrel para a possição atual do mouse.
 	$barrel.look_at(get_global_mouse_position())
