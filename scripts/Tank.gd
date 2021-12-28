@@ -13,6 +13,8 @@ PI(180 graus) Pi dividido por 2, 90 graus - Pi multiplicado por 2 360 graus
 OBS: 1 PI é meia esfera."""
 const ROT_VEL = PI / 2
 
+# contante pra zerar valor
+const dead_zone = 0.02
 # variável para o controle de velocidade.
 const MAX_SPEED = 100
 
@@ -20,7 +22,7 @@ const MAX_SPEED = 100
 var pre_bullet = preload("res://scenes/bullet.tscn")
 var pre_track = preload("res://scenes/track.tscn")
 var travel = 0
-
+var can_mouse_look = false
 # Variável para celeração
 var aceleracao = 0
 
@@ -63,6 +65,12 @@ func _ready():
 func _draw():
 	$Sprite.texture = load(bodies[bodie])
 	$barrel/sprite.texture = load(barrels[barrel])
+
+# Monitorar eventos de entrada.
+func _input(event):
+	if event is InputEventMouseMotion:
+		can_mouse_look = true
+	pass
 	
 # Chamado todos os quadros. 'delta' é o tempo decorrido desde o quadro anterior.
 func _physics_process(delta):
@@ -162,16 +170,30 @@ func _physics_process(delta):
 		$"../".add_child(track) # adicionando o track no parente tanque.
 	
 	# Pegando o angulo do analogo horizontal da direita
-	var e_hor_axis = Input.get_joy_axis(0, JOY_AXIS_2)
-	print(e_hor_axis)
+	var r_hor_axis = Input.get_joy_axis(0, JOY_AXIS_2)
+	# Zerando o valor do eixo usando asb de acordo com a variável dead_zone
+	if abs(r_hor_axis) < dead_zone:
+		r_hor_axis = 0
 	
 	# Pegando o angulo do analogo vertical da direita
-	#var d_vert_axis = Input.get_joy_axis(0, JOY_AXIS_3)
-	
-	
-	# Apontando o barrel para a possição atual do mouse.
-	$barrel.look_at(get_global_mouse_position())
-	
+	var r_vert_axis = Input.get_joy_axis(0, JOY_AXIS_3)
+	if abs(r_vert_axis) < dead_zone:
+		r_vert_axis = 0
+		
+		
+	if (r_hor_axis) != 0 or (r_vert_axis) != 0:
+		
+		var vector =  Vector2(r_hor_axis, r_vert_axis)
+		
+		if vector.length() > 0.9:
+			# controle da torreta com o analogico
+			$barrel.global_rotation = vector.normalized().angle()
+			can_mouse_look = false
+		
+	if can_mouse_look:
+		# Apontando o barrel para a possição atual do mouse.
+		$barrel.look_at(get_global_mouse_position())
+		
 # Função para alterar o corpo de tank.
 func set_bodie(val):
 	bodie = val
